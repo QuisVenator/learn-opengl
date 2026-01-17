@@ -9,6 +9,8 @@
 // --- Function prototypes ---
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
+float triangle_wave_fast(float t, float period = 2.0f);
+float random_float(float min, float max);
 
 // --- Main function ---
 int main()
@@ -80,6 +82,8 @@ int main()
 
     // Render loop
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    float starting_right_offset = random_float(0.0f, 1.0f);
+    float starting_top_offset = random_float(0.0f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -92,6 +96,10 @@ int main()
         float bottom_right = sin(timeValue + M_PI / 2);
         float bottom_left = sin(timeValue + M_PI);
         float top_left = sin(timeValue + 3 * M_PI / 2);
+
+        float rightOffset = triangle_wave_fast(timeValue + starting_right_offset);
+        float topOffset = triangle_wave_fast(timeValue + starting_top_offset);
+        printf("rightOffset: %f, topOffset: %f\n", rightOffset, topOffset);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
         vertices[3] = top_right;
@@ -100,6 +108,9 @@ int main()
         vertices[21] = top_left;
 
         shaderProgram.use();
+
+        shaderProgram.setFloat("rightOffset", rightOffset);
+        shaderProgram.setFloat("topOffset", topOffset);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -144,4 +155,25 @@ void processInput(GLFWwindow *window)
     {
         wasPressedW = false;
     }
+}
+
+float triangle_wave_fast(float t, float period)
+{
+    // Offset t by period/4 to align it with Sin (starts at 0)
+    // instead of Cos (starts at 1)
+    float shifted_t = t - (period / 4.0f);
+
+    // Create a sawtooth wave
+    float sawtooth = fmod(shifted_t, period);
+    if (sawtooth < 0)
+        sawtooth += period; // Handle negative inputs
+
+    // Fold the sawtooth into a triangle
+    return (2.0f / period) * fabs(sawtooth - (period / 2.0f)) - 0.5f;
+}
+
+float random_float(float min, float max)
+{
+    float scale = rand() / (float)RAND_MAX; // [0, 1.0]
+    return min + scale * (max - min);       // [min, max]
 }
