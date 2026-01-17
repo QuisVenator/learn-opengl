@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Active Lesson",
+            "type": "cppdbg",
+            "request": "launch",
+            // The path to the executable (e.g., build/01_window)
+            "program": "${workspaceFolder}/build/${fileDirnameBasename}",
+            "args": [],
+            "stopAtEntry": false,
+            // Important: Set working directory to build so it finds shaders/assets relative to it if needed
+            // Or set to "${fileDirname}" if you plan to load assets relative to source files
+            "cwd": "${workspaceFolder}/build",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            // Before running, execute the build task we defined above
+            "preLaunchTask": "Build Current Lesson"
+        }
+    ]
+}
