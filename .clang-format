@@ -1,0 +1,35 @@
+---
+Language:        Cpp
+BasedOnStyle:    LLVM
+
+# --- Indentation ---
+IndentWidth:     4
+TabWidth:        4
+UseTab:          Never
+
+# --- Line Length ---
+# OpenGL functions can get VERY long. 80 chars is too short.
+ColumnLimit:     120
+
+# --- Braces ---
+# Options:
+# "Attach" -> { on the same line (Java/JS style). Compact.
+# "Allman" -> { on the next line (C# style). Better for vertical readability.
+BreakBeforeBraces: Allman
+
+# --- Pointers ---
+PointerAlignment: Right
+
+# --- Includes ---
+SortIncludes:    false
+
+# --- Arguments ---
+# If a function call doesn't fit on one line, allow arguments to stack neatly
+BinPackArguments: true
+AllowAllArgumentsOnNextLine: true
+
+# --- Extras ---
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakBeforeMultilineStrings: true
+AlignAfterOpenBracket: Align
+...
