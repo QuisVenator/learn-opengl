@@ -56,14 +56,16 @@ int main()
 
     // Vertices
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // P1
-        0.5f,  -0.5f, 0.0f, // P2
-        0.0f,  0.5f,  0.0f, // P3
+        -0.5f, 1.0f,  0.0f, // P1
+        0.5f,  1.0f,  0.0f, // P2
+        0.0f,  0.0f,  0.0f, // P3
+        -0.5f, -1.0f, 0.0f, // P1
+        0.5f,  -1.0f, 0.0f, // P2
+        0.0f,  0.0f,  0.0f, // P3
+
     };
     unsigned int VBO;
     glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Shaders
     unsigned int vertexShader;
@@ -105,9 +107,6 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
     // Create vertex array object
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -127,7 +126,7 @@ int main()
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -146,8 +145,28 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 // --- Function definitions ---
 void processInput(GLFWwindow *window)
 {
+    static bool wasPressedW = false;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && !wasPressedW)
+    {
+        wasPressedW = true;
+        // Toggle wireframe mode
+        static bool wireframe = false;
+        wireframe = !wireframe;
+        if (wireframe)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+    }
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+    {
+        wasPressedW = false;
     }
 }
